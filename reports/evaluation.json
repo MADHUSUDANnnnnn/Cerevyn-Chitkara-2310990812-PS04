@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-10-12T09:25:07.931148Z",
+  "timestamp": "2026-10-12T12:00:34.365168Z",
   "dataset_split": {
     "train_size": 20,
     "test_size": 10,
@@ -192,5 +192,5 @@
       ]
     }
   },
-  "sample_size_notes": "Small sample size disclosure: The test set contains exactly 10 samples (Billing: 3, Technical: 3, Access: 2, General: 2). Each sample represents 10% of total accuracy. Metrics reflect genuine out-of-sample performance on this curated benchmark set."
+  "sample_size_notes": "Small sample size disclosure: The test set contains exactly 10 samples (Billing: 3, Technical: 3, Access: 2, General: 2). The one-ticket difference between baseline (10/10) and embeddings (9/10) is within statistical noise at N=10. The baseline performs well because these fictional tickets contain obvious category keywords. Dense embeddings may generalize better to paraphrased wording, but this test set cannot demonstrate that. No conclusion about which method is better should be drawn from 10 tickets. The 60% cross-validation accuracy and 90% test accuracy differ because both samples are tiny."
 }

@@ -130,8 +130,12 @@ def run_evaluation():
         },
         "sample_size_notes": (
             "Small sample size disclosure: The test set contains exactly 10 samples (Billing: 3, "
-            "Technical: 3, Access: 2, General: 2). Each sample represents 10% of total accuracy. "
-            "Metrics reflect genuine out-of-sample performance on this curated benchmark set."
+            "Technical: 3, Access: 2, General: 2). The one-ticket difference between baseline (10/10) "
+            "and embeddings (9/10) is within statistical noise at N=10. The baseline performs well "
+            "because these fictional tickets contain obvious category keywords. Dense embeddings may "
+            "generalize better to paraphrased wording, but this test set cannot demonstrate that. "
+            "No conclusion about which method is better should be drawn from 10 tickets. "
+            "The 60% cross-validation accuracy and 90% test accuracy differ because both samples are tiny."
         ),
     }
 
@@ -141,6 +145,9 @@ def run_evaluation():
     print(f"Saved evaluation JSON to {json_path}")
 
     # 5. Construct Markdown report
+    delta_pp = (ml_acc - base_acc) * 100
+    delta_str = f"{delta_pp:.1f} percentage points"
+
     md_content = f"""# Model Evaluation Report: PS04 Azure Support Ticket Automation
 
 **Generated**: {report_data['timestamp']}  
@@ -153,7 +160,7 @@ def run_evaluation():
 
 | Metric | Sentence Embeddings + Logistic Regression | Keyword Rule Baseline | Delta |
 | :--- | :--- | :--- | :--- |
-| **Test Accuracy** | **{ml_acc * 100:.1f}%** ({int(ml_acc * len(test_df))}/{len(test_df)}) | **{base_acc * 100:.1f}%** ({int(base_acc * len(test_df))}/{len(test_df)}) | **+{ (ml_acc - base_acc) * 100:.1f}%** |
+| **Test Accuracy** | **{ml_acc * 100:.1f}%** ({int(ml_acc * len(test_df))}/{len(test_df)}) | **{base_acc * 100:.1f}%** ({int(base_acc * len(test_df))}/{len(test_df)}) | **{delta_str}** |
 | **Train CV Accuracy** | **{tuning_info['cv_accuracy'] * 100:.1f}%** (4-fold CV) | N/A (rule-based) | - |
 | **Hyperparameter C** | **{tuning_info['best_c']}** (tuned on train set) | N/A | - |
 | **Confidence Threshold** | **{tuning_info['cv_threshold']}** (OOF-calibrated) | N/A | - |
@@ -210,8 +217,9 @@ Uncertain predictions where `confidence < {tuning_info['cv_threshold']}` are saf
 ## 4. Honest Methodology & Sample Size Disclosure
 
 1. **Strict Partitioning**: The 10 test tickets were locked before hyperparameter exploration. Neither LogisticRegression `C` nor `CONFIDENCE_THRESHOLD` were tuned on the test set.
-2. **Sample Granularity**: With a test size of $N=10$, each individual ticket corresponds to exactly $10\\%$ of test accuracy. While the performance demonstrates the embedding model's strong semantic representation capabilities over basic keyword matching, results in production should be tracked using rolling online metrics and shadow deployment.
-3. **Reproducibility**: Splitting uses fixed `random_state=42` and `StratifiedKFold(n_splits=4)` ensuring deterministic verification across environments.
+2. **Sample Granularity & Baseline Comparison**: The one-ticket difference (9/10 vs 10/10) is well within statistical noise at $N=10$. The keyword baseline performs well because these fictional tickets contain obvious category keywords (e.g. 'invoice', 'cluster', 'MFA'). Dense embeddings may generalize better to complex, noisy, or paraphrased wording in production, but this test set cannot show that. No conclusion about which method is better should be drawn from 10 tickets.
+3. **Train CV vs Test Discrepancy**: The 60.0% cross-validation accuracy on the training set and the 90.0% test accuracy differ because both samples are tiny ($N=20$ and $N=10$), making accuracy highly sensitive to single-sample shifts.
+4. **Reproducibility**: Splitting uses fixed `random_state=42` and `StratifiedKFold(n_splits=4)` ensuring deterministic verification across environments.
 """
 
     md_path = reports_dir / "evaluation.md"

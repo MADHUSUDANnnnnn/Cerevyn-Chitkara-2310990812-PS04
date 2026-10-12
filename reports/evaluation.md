@@ -1,6 +1,6 @@
 # Model Evaluation Report: PS04 Azure Support Ticket Automation
 
-**Generated**: 2026-10-12T09:25:07.931148Z  
+**Generated**: 2026-10-12T12:00:34.365168Z  
 **Candidate**: Madhusudan Mudgal (Chitkara University, Roll No: 2310990812)  
 **Dataset**: 30 Labeled Fictional Support Tickets (Stratified Split: 20 Train / 10 Test, Seed=42)
 
@@ -10,7 +10,7 @@
 
 | Metric | Sentence Embeddings + Logistic Regression | Keyword Rule Baseline | Delta |
 | :--- | :--- | :--- | :--- |
-| **Test Accuracy** | **90.0%** (9/10) | **100.0%** (10/10) | **+-10.0%** |
+| **Test Accuracy** | **90.0%** (9/10) | **100.0%** (10/10) | **-10.0 percentage points** |
 | **Train CV Accuracy** | **60.0%** (4-fold CV) | N/A (rule-based) | - |
 | **Hyperparameter C** | **2.0** (tuned on train set) | N/A | - |
 | **Confidence Threshold** | **0.35** (OOF-calibrated) | N/A | - |
@@ -68,5 +68,6 @@ Uncertain predictions where `confidence < 0.35` are safely routed to `needs_revi
 ## 4. Honest Methodology & Sample Size Disclosure
 
 1. **Strict Partitioning**: The 10 test tickets were locked before hyperparameter exploration. Neither LogisticRegression `C` nor `CONFIDENCE_THRESHOLD` were tuned on the test set.
-2. **Sample Granularity**: With a test size of $N=10$, each individual ticket corresponds to exactly $10\%$ of test accuracy. While the performance demonstrates the embedding model's strong semantic representation capabilities over basic keyword matching, results in production should be tracked using rolling online metrics and shadow deployment.
-3. **Reproducibility**: Splitting uses fixed `random_state=42` and `StratifiedKFold(n_splits=4)` ensuring deterministic verification across environments.
+2. **Sample Granularity & Baseline Comparison**: The one-ticket difference (9/10 vs 10/10) is well within statistical noise at $N=10$. The keyword baseline performs well because these fictional tickets contain obvious category keywords (e.g. 'invoice', 'cluster', 'MFA'). Dense embeddings may generalize better to complex, noisy, or paraphrased wording in production, but this test set cannot show that. No conclusion about which method is better should be drawn from 10 tickets.
+3. **Train CV vs Test Discrepancy**: The 60.0% cross-validation accuracy on the training set and the 90.0% test accuracy differ because both samples are tiny ($N=20$ and $N=10$), making accuracy highly sensitive to single-sample shifts.
+4. **Reproducibility**: Splitting uses fixed `random_state=42` and `StratifiedKFold(n_splits=4)` ensuring deterministic verification across environments.
