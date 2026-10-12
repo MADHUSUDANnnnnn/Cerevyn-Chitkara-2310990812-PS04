@@ -1,0 +1,28 @@
+# Secrets and local environments
+.env
+.env.*
+.venv
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Git and OS metadata
+.git/
+.gitignore
+.DS_Store
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+tickets.db

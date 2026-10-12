@@ -1,0 +1,56 @@
+[
+  {
+    "id": "KB-001",
+    "title": "Duplicate Charges and Refund Inquiries",
+    "category": "Billing",
+    "content": "If you notice duplicate charges on your credit card or invoice, submit the invoice number and charge dates to Finance Support. Duplicate billing investigations are prioritized and eligible refunds are processed back to the original payment method within 3 to 5 business days after verification. Do not dispute the charge with your bank while under active review to avoid temporary account holds."
+  },
+  {
+    "id": "KB-002",
+    "title": "Accessing and Downloading Monthly Billing Invoices",
+    "category": "Billing",
+    "content": "Monthly itemized invoices are generated on the 1st of each calendar month. To view or export PDF/CSV statements, navigate to Cost Management + Billing > Invoices in the Azure Portal. Ensure your user account has the Billing Reader or Billing Account Contributor role assigned. If you receive an Access Denied error on the invoices tab, contact your subscription administrator to verify RBAC billing permissions."
+  },
+  {
+    "id": "KB-003",
+    "title": "Emergency Administrator Lockout and MFA Recovery",
+    "category": "Access",
+    "content": "If an emergency or global administrator is locked out of the tenant due to phone loss or MFA misconfiguration, use the designated Break-Glass emergency account stored in your organization's physical vault. Alternatively, secondary tenant administrators can generate a Temporary Access Pass (TAP) from Microsoft Entra ID > Users > Authentication Methods. For security verification, automated password resets are disabled for root admin profiles."
+  },
+  {
+    "id": "KB-004",
+    "title": "SAML SSO Authentication & Certificate Expiration",
+    "category": "Access",
+    "content": "Single Sign-On (SSO) authentication failures such as HTTP 401 or invalid assertion signatures typically indicate an expired signing certificate on your Identity Provider (IdP e.g. Okta or Azure AD). Administrators should upload the new X.509 federation metadata certificate into Enterprise Applications > Single Sign-on. Propagation across authentication endpoints takes up to 15 minutes."
+  },
+  {
+    "id": "KB-005",
+    "title": "Production Service Outages and Incident Response",
+    "category": "Technical",
+    "content": "When a production Kubernetes cluster, virtual machine, or database suffers an unexpected outage, immediately verify Azure Service Health for regional incidents. Our Engineering Support team triages production down events with priority routing. Customers should provide impacted cluster IDs, resource group names, and recent deployment timestamps to accelerate root cause analysis."
+  },
+  {
+    "id": "KB-006",
+    "title": "Troubleshooting Azure App Service HTTP 502 Bad Gateway",
+    "category": "Technical",
+    "content": "Intermittent HTTP 502 Bad Gateway responses on Azure App Service usually stem from container startup timeouts or application crashes listening on the designated PORT. Review docker logs under Log Stream or Kudu diagnostic console. Verify that your container exposes PORT 80/8080 and responds to health pings within 230 seconds during cold starts."
+  },
+  {
+    "id": "KB-007",
+    "title": "Assigning Role-Based Access Control (RBAC) Permissions",
+    "category": "Access",
+    "content": "To grant team members access to cloud resources, open the Resource Group or Subscription > Access Control (IAM) > Add Role Assignment. Assign the least-privilege built-in role (e.g. Reader, Contributor). Changes propagate to Azure Resource Manager within 5 to 10 minutes. For temporary elevated access, configure Privileged Identity Management (PIM) eligible assignments."
+  },
+  {
+    "id": "KB-008",
+    "title": "Support Tiers, Business Hours, and SLA Commitments",
+    "category": "General",
+    "content": "Standard Customer Care operates Monday through Friday, 8:00 AM to 8:00 PM EST, with a target response time of 8 business hours. Business and Enterprise tier subscribers receive 24x7 coverage for high-severity incidents with a 1-hour initial response SLA. SOC2, ISO27001, and HIPAA compliance attestations can be downloaded directly from the Microsoft Service Trust Portal."
+  },
+  {
+    "id": "KB-009",
+    "title": "Managing Reserved VM Instances and Capacity Changes",
+    "category": "Billing",
+    "content": "Reserved Instances (RI) provide significant cost discounts over pay-as-you-go rates. When decommissioning virtual machines, check if your reservation has instance size flexibility enabled. To exchange or cancel a reservation before its 1-year or 3-year term ends, go to Reservations > select reservation > Exchange/Refund. Early cancellations may be subject to prorated annual limits."
+  }
+]

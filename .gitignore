@@ -1,0 +1,48 @@
+# Environment variables & secrets (CRITICAL: never commit .env)
+.env
+.env.local
+.env.*.local
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# SQLite databases
+*.sqlite
+*.sqlite3
+*.db
+tickets.db
+test_*.db
+
+# Model caches
+model_cache/
+.cache/
+huggingface/
+
+# IDE & OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build & packaging
+build/
+dist/
+*.egg-info/

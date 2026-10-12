@@ -1,0 +1,196 @@
+{
+  "timestamp": "2026-10-12T09:25:07.931148Z",
+  "dataset_split": {
+    "train_size": 20,
+    "test_size": 10,
+    "split_seed": 42,
+    "stratified": true
+  },
+  "hyperparameter_tuning": {
+    "method": "StratifiedKFold (n_splits=4) on training set only",
+    "best_c": 2.0,
+    "cv_train_accuracy": 0.6000000000000001,
+    "cv_chosen_threshold": 0.35
+  },
+  "embedding_classifier": {
+    "model": "all-MiniLM-L6-v2 + LogisticRegression",
+    "test_accuracy": 0.9,
+    "classification_report": {
+      "Billing": {
+        "precision": 0.75,
+        "recall": 1.0,
+        "f1-score": 0.8571428571428571,
+        "support": 3.0
+      },
+      "Technical": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "Access": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1-score": 0.6666666666666666,
+        "support": 2.0
+      },
+      "General": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "accuracy": 0.9,
+      "macro avg": {
+        "precision": 0.9375,
+        "recall": 0.875,
+        "f1-score": 0.8809523809523809,
+        "support": 10.0
+      },
+      "weighted avg": {
+        "precision": 0.925,
+        "recall": 0.9,
+        "f1-score": 0.8904761904761905,
+        "support": 10.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "Billing",
+        "Technical",
+        "Access",
+        "General"
+      ],
+      "matrix": [
+        [
+          3,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2
+        ]
+      ]
+    },
+    "mean_confidence": 0.36856,
+    "min_confidence": 0.2994,
+    "max_confidence": 0.4322,
+    "needs_review_count": 3,
+    "tickets_routed_to_review": [
+      {
+        "ticket_id": "TCK-1015",
+        "message": "Please reset the password and temporary access pass for contractor user dev_contractor_09@cerevyn.com.",
+        "true_category": "Access",
+        "predicted_category": "Billing",
+        "confidence": 0.3244
+      },
+      {
+        "ticket_id": "TCK-1019",
+        "message": "The API gateway key for our microservices integration has expired and requests are returning 401 Unauthorized.",
+        "true_category": "Access",
+        "predicted_category": "Access",
+        "confidence": 0.3085
+      },
+      {
+        "ticket_id": "TCK-1024",
+        "message": "Thank you for resolving our previous query. What is the process for submitting feedback on our assigned technical account manager?",
+        "true_category": "General",
+        "predicted_category": "General",
+        "confidence": 0.2994
+      }
+    ]
+  },
+  "keyword_baseline": {
+    "test_accuracy": 1.0,
+    "classification_report": {
+      "Billing": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "Technical": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 3.0
+      },
+      "Access": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "General": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 2.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 10.0
+      }
+    },
+    "confusion_matrix": {
+      "labels": [
+        "Billing",
+        "Technical",
+        "Access",
+        "General"
+      ],
+      "matrix": [
+        [
+          3,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2
+        ]
+      ]
+    }
+  },
+  "sample_size_notes": "Small sample size disclosure: The test set contains exactly 10 samples (Billing: 3, Technical: 3, Access: 2, General: 2). Each sample represents 10% of total accuracy. Metrics reflect genuine out-of-sample performance on this curated benchmark set."
+}

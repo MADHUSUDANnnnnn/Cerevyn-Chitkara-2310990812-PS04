@@ -1,0 +1,57 @@
+name: Deploy to Azure App Service
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment target environment"
+        required: true
+        default: "production"
+        type: choice
+        options:
+          - staging
+          - production
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Build & Deploy to Azure
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to Azure via OIDC (Federated Credentials)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Package Application Artifact
+        run: |
+          mkdir -p release
+          cp -r app data scripts reports requirements.txt release/
+          cd release && zip -r ../app-package.zip .
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: "cerevyn-ps04-app"
+          package: "./app-package.zip"

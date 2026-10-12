@@ -1,0 +1,21 @@
+ticket_id,message,category,expected_priority
+TCK-1001,Our production Azure Kubernetes Service cluster is down with an unexpected outage. All customer traffic is dropping.,Technical,high
+TCK-1002,We were charged twice on our corporate Visa for invoice INV-2026-0331. Please issue a refund immediately.,Billing,high
+TCK-1003,Our lead administrator is locked out of the Azure portal after MFA was reset erroneously. We cannot manage critical infrastructure.,Access,high
+TCK-1004,Could you provide information regarding the SOC2 and ISO27001 compliance certifications for your cloud hosting regions?,General,low
+TCK-1007,We need to provision read-only RBAC access to the staging resource group for three new junior engineers.,Access,low
+TCK-1008,What are your standard support hours and SLA response times for business tier customers?,General,low
+TCK-1009,Catastrophic data loss on our Blob storage container after an automated lifecycle policy ran unexpectedly. Urgent assistance required.,Technical,high
+TCK-1011,Multiple team members are unable to authenticate via Okta Single Sign-On due to an expired SAML certificate.,Access,high
+TCK-1014,How do we update the registered credit card and billing contact email on our enterprise agreement portal?,Billing,low
+TCK-1016,Can we schedule an introductory call to discuss cloud architecture best practices for migration next quarter?,General,low
+TCK-1018,Our latest invoice shows an unexpected surge in bandwidth egress fees for the Southeast Asia region. Can you explain the charges?,Billing,medium
+TCK-1020,Where can we find your public API roadmap and deprecated features announcement page?,General,low
+TCK-1021,Redis cache cluster node crashed repeatedly with out-of-memory errors. The application failover was triggered.,Technical,medium
+TCK-1022,We require a tax exemption certificate applied to our European VAT billing profile before the next billing cycle.,Billing,low
+TCK-1023,Need to revoke access tokens and active sessions for a terminated employee across all Azure subscription directories.,Access,high
+TCK-1025,SSL handshake failures on custom domain api.cerevyn.com configured through Azure Front Door. Cert status shows pending renewal.,Technical,medium
+TCK-1027,I can't see my invoice after login. The billing tab says access denied when I click view statements.,Billing,medium
+TCK-1028,Payment succeeded but our virtual machine is still suspended and won't boot.,Technical,medium
+TCK-1029,I need permission to upgrade our cloud tier to avoid system service degradation during the launch.,Access,medium
+TCK-1030,How do I change the billing owner account without disrupting the live API production traffic?,General,low
