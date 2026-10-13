@@ -77,6 +77,10 @@ class HealthLLMResponse(BaseModel):
     reachable: bool
     model: Optional[str] = None
     base_url: Optional[str] = None
+    missing_settings: List[str] = Field(
+        default_factory=list,
+        description="Names (never values) of LLM settings that are not set.",
+    )
     message: str
 
 

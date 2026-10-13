@@ -3,7 +3,7 @@ config.py - Application configuration using Pydantic Settings.
 Reads variables strictly from environment/.env at runtime without hardcoded providers or secrets.
 """
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -47,10 +47,31 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    def llm_missing_settings(self) -> List[str]:
+        """Return the names (never the values) of whichever LLM settings are missing.
+
+        All three of GROQ_API_KEY, LLM_BASE_URL, and LLM_MODEL must be present
+        for the LLM to be considered configured.  Returning an empty list means
+        all three are set.
+        """
+        missing: List[str] = []
+        if not self.GROQ_API_KEY:
+            missing.append("GROQ_API_KEY")
+        if not self.LLM_BASE_URL:
+            missing.append("LLM_BASE_URL")
+        if not self.LLM_MODEL:
+            missing.append("LLM_MODEL")
+        return missing
+
+    @property
+    def llm_fully_configured(self) -> bool:
+        """True only when GROQ_API_KEY, LLM_BASE_URL, and LLM_MODEL are all set."""
+        return len(self.llm_missing_settings()) == 0
+
     def safe_summary(self) -> Dict[str, object]:
         """Return safe configuration representation without exposing any secret keys."""
         return {
-            "llm_configured": bool(self.GROQ_API_KEY),
+            "llm_configured": self.llm_fully_configured,
             "llm_base_url": self.LLM_BASE_URL if self.LLM_BASE_URL else "(not set)",
             "llm_model": self.LLM_MODEL if self.LLM_MODEL else "(not set)",
             "llm_timeout_seconds": self.LLM_TIMEOUT_SECONDS,

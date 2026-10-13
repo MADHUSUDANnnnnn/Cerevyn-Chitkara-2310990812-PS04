@@ -84,11 +84,17 @@ class OpenAICompatibleClient:
         self.template_fallback = TemplateClient()
 
     def _get_client(self) -> Optional[OpenAI]:
-        if not settings.GROQ_API_KEY:
+        """Return an OpenAI-SDK client only when all three LLM settings are present.
+
+        If any of GROQ_API_KEY, LLM_BASE_URL, or LLM_MODEL is missing we return
+        None rather than constructing the client — this prevents the SDK from
+        silently using its built-in default of https://api.openai.com.
+        """
+        if not settings.llm_fully_configured:
             return None
         return OpenAI(
             api_key=settings.GROQ_API_KEY,
-            base_url=settings.LLM_BASE_URL,
+            base_url=settings.LLM_BASE_URL,  # always explicit; never SDK default
             timeout=settings.LLM_TIMEOUT_SECONDS,
         )
 
@@ -121,9 +127,14 @@ class OpenAICompatibleClient:
         priority: str,
         kb_article: Optional[Dict[str, str]] = None,
     ) -> Tuple[LLMOutputSchema, str]:
-        # If API key or model is not configured, directly use TemplateClient
-        if not settings.GROQ_API_KEY or not settings.LLM_MODEL:
-            logger.info("LLM not configured (missing key or model). Using TemplateClient fallback.")
+        # If any of the three required settings are missing, go straight to TemplateClient.
+        # This also prevents the SDK from constructing a client that defaults to api.openai.com.
+        if not settings.llm_fully_configured:
+            missing = settings.llm_missing_settings()
+            logger.info(
+                "LLM not configured (missing: %s). Using TemplateClient fallback.",
+                ", ".join(missing),
+            )
             return self.template_fallback.generate_draft(message, category, priority, kb_article)
 
         client = self._get_client()
