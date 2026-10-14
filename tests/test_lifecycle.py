@@ -62,3 +62,21 @@ def test_double_approval_returns_409_conflict(client: TestClient):
     res2 = client.post("/tickets/TCK-LIFE-003/approve")
     assert res2.status_code == 409
     assert "already been approved" in res2.json()["detail"].lower()
+
+
+def test_team_routing_assignments(client: TestClient):
+    """Each category must map to its documented support team (deterministic config table)."""
+    cases = [
+        ("TCK-ROUTE-1", "We were charged twice for the same Azure subscription this month.", "Finance Support"),
+        ("TCK-ROUTE-2", "Production App Service is returning 502 errors intermittently.", "Engineering Support"),
+        ("TCK-ROUTE-3", "User account is locked out after failed MFA attempts.", "IT Security / Identity"),
+        ("TCK-ROUTE-4", "How do I request a copy of our Azure SLA compliance certificate?", "Customer Care"),
+    ]
+    for ticket_id, message, expected_team in cases:
+        res = client.post("/tickets", json={"ticket_id": ticket_id, "message": message})
+        assert res.status_code == 201, f"Ticket {ticket_id} creation failed: {res.json()}"
+        data = res.json()
+        assert data["assigned_team"] == expected_team, (
+            f"Ticket {ticket_id}: expected team '{expected_team}', got '{data['assigned_team']}' "
+            f"(category={data['category']})"
+        )
