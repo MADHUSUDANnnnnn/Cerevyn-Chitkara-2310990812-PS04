@@ -1,6 +1,6 @@
 # Azure Support Ticket Automation (Problem PS04)
 
-[![Continuous Integration](https://github.com/madhusudan/Cerevyn-Chitkara-2310990812-PS04/actions/workflows/ci.yml/badge.svg)](https://github.com/madhusudan/Cerevyn-Chitkara-2310990812-PS04/actions/workflows/ci.yml)
+[![Continuous Integration](https://github.com/MADHUSUDANnnnnn/Cerevyn-Chitkara-2310990812-PS04/actions/workflows/ci.yml/badge.svg)](https://github.com/MADHUSUDANnnnnn/Cerevyn-Chitkara-2310990812-PS04/actions/workflows/ci.yml)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115.6-009688.svg)](https://fastapi.tiangolo.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -10,6 +10,19 @@
 > **Institution**: Chitkara University  
 > **Degree & Branch**: B.E. Computer Science and Engineering (CSE)  
 > **Roll Number**: 2310990812  
+
+---
+
+## Submission Links
+
+> **Fill these in before submitting — they are placeholders.**
+
+| Item | Link |
+| :--- | :--- |
+| **CI run (green)** | `<paste link to the passing GitHub Actions run>` |
+| **Demo recording (3–5 min)** | `<paste link>` |
+| **Final commit hash evaluated** | `<paste hash>` |
+| **Screenshots** | [`docs/screenshots/`](docs/screenshots/) — add: `docker_ps_healthy.png`, `live_llm_draft.png`, `template_fallback.png`, `approval_flow.png` |
 
 ---
 
@@ -94,7 +107,7 @@ flowchart TD
 
 ### Step 1: Clone and Create Virtual Environment
 ```bash
-git clone https://github.com/madhusudan/Cerevyn-Chitkara-2310990812-PS04.git
+git clone https://github.com/MADHUSUDANnnnnn/Cerevyn-Chitkara-2310990812-PS04.git
 cd Cerevyn-Chitkara-2310990812-PS04
 
 # Using standard venv
@@ -130,10 +143,13 @@ The application functions completely without any external API key. However, to e
    ```env
    LLM_BASE_URL=https://api.groq.com/openai/v1
    GROQ_API_KEY=gsk_your_actual_groq_api_key
-   LLM_MODEL=llama-3.3-70b-versatile
+   LLM_MODEL=<model id from your provider console>
    LLM_TIMEOUT_SECONDS=10.0
    LLM_TEMPERATURE=0.2
    ```
+   > **Note**: The author tested with `openai/gpt-oss-20b` on Groq. Model names change
+   > frequently — always verify the current model ID in the [Groq Cloud Console](https://console.groq.com/)
+   > before setting `LLM_MODEL`.
 
 ### Preset B: Local OmniRoute / LiteLLM / Ollama Gateway
 1. Start your local OpenAI-compatible proxy (e.g. LiteLLM on port 8080).
@@ -166,7 +182,7 @@ The interactive OpenAPI documentation is available at:
 
 ## 7. How to Test
 
-Execute the full automated test suite (28 tests covering API validation, categories, lifecycle, priority rules, and LLM fallbacks):
+Execute the full automated test suite (36 tests covering API validation, classifier, health/LLM configuration, lifecycle, team routing, priority rules, and LLM fallbacks):
 ```bash
 pytest -v
 ```
@@ -237,52 +253,59 @@ curl http://localhost:8000/health
 
 ## 10. Example API Requests & Responses
 
-### 1. Submit a Standard Support Ticket
+All responses below are **real outputs** captured from a running instance. Examples 1–5 use
+template fallback mode (`GROQ_API_KEY=` unset); Example 6 shows a live LLM draft captured
+separately with Groq.
+
+### 1. Submit a Standard Support Ticket (template fallback)
 ```bash
 curl -X POST http://localhost:8000/tickets \
   -H "Content-Type: application/json" \
-  -d '{
-    "ticket_id": "TCK-1001",
-    "message": "Our production Azure Kubernetes Service cluster is down with an unexpected outage. All customer traffic is dropping."
-  }'
+  -d '{"ticket_id": "DEMO-001", "message": "Our production Azure Kubernetes Service cluster is down with an unexpected outage. All customer traffic is dropping."}'
 ```
 **Response (HTTP 201 Created)**:
 ```json
 {
-  "ticket_id": "TCK-1001",
+  "ticket_id": "DEMO-001",
   "message": "Our production Azure Kubernetes Service cluster is down with an unexpected outage. All customer traffic is dropping.",
   "category": "Technical",
   "priority": "high",
   "assigned_team": "Engineering Support",
-  "summary": "Production Azure Kubernetes Service cluster is currently down due to an unexpected outage impacting all customer traffic.",
-  "draft_response": "Hello,\n\nThank you for reaching out to Azure Support. We understand that your production Azure Kubernetes Service cluster is down...\n\nBest regards,\nAzure Engineering Support Team",
+  "summary": "Customer reported Technical issue (high priority): Our production Azure Kubernetes Service cluster is down with an unexpected outage.",
+  "draft_response": "Hello,\n\nThank you for contacting Azure Support. We have received your technical inquiry.\n\nRegarding your issue, our documentation indicates:\n\"When a production Kubernetes cluster, virtual machine, or database suffers an unexpected outage, immediately verify Azure Service Health for regional incidents. Our Engineering Support team triages production down events with priority routing. Customers should provide impacted cluster IDs, resource group names, and recent deployment timestamps to accelerate root cause analysis.\"\n\nYour ticket has been assigned to our Engineering Support team for further review. If you have additional log files or subscription details, please reply directly to this thread.\n\nBest regards,\nAzure Support Team",
   "status": "draft_generated",
-  "confidence": 0.4412,
-  "draft_source": "llm",
-  "created_at": "2026-10-12T09:25:00.000000",
-  "updated_at": "2026-10-12T09:25:00.000000"
+  "confidence": 0.4819,
+  "draft_source": "template",
+  "created_at": "2026-10-13T19:08:03.737532",
+  "updated_at": "2026-10-13T19:08:03.737535"
 }
 ```
 
 ### 2. Submit an Ambiguous Ticket (Routed to `needs_review`)
+
+This message is from the evaluation report's review list (TCK-1015 in the test set — contractor
+password reset, confidence `0.3244 < 0.35` threshold):
+
 ```bash
 curl -X POST http://localhost:8000/tickets \
   -H "Content-Type: application/json" \
-  -d '{
-    "ticket_id": "TCK-1027",
-    "message": "I can not see my invoice after login. The billing tab says access denied when I click view statements."
-  }'
+  -d '{"ticket_id": "DEMO-002", "message": "Please reset the password and temporary access pass for contractor user dev_contractor_09@cerevyn.com."}'
 ```
-**Response (HTTP 201 Created with status `needs_review`)**:
+**Response (HTTP 201 Created — status `needs_review` because confidence < 0.35)**:
 ```json
 {
-  "ticket_id": "TCK-1027",
+  "ticket_id": "DEMO-002",
+  "message": "Please reset the password and temporary access pass for contractor user dev_contractor_09@cerevyn.com.",
   "category": "Billing",
-  "priority": "medium",
+  "priority": "low",
   "assigned_team": "Finance Support",
+  "summary": "Customer reported Billing issue (low priority): Please reset the password and temporary access pass for contractor user dev_contractor_09@cerevyn.",
+  "draft_response": "Hello,\n\nThank you for reaching out to Azure Support. We have received your request regarding your billing issue.\n\nYour ticket has been routed to our Finance Support team with low priority. A specialized support engineer is reviewing your case and will follow up with you shortly.\n\nBest regards,\nAzure Support Team",
   "status": "needs_review",
   "confidence": 0.3244,
-  "draft_source": "llm"
+  "draft_source": "template",
+  "created_at": "2026-10-13T19:08:34.305322",
+  "updated_at": "2026-10-13T19:08:34.305326"
 }
 ```
 
@@ -290,15 +313,12 @@ curl -X POST http://localhost:8000/tickets \
 ```bash
 curl -X POST http://localhost:8000/tickets \
   -H "Content-Type: application/json" \
-  -d '{
-    "ticket_id": "TCK-1001",
-    "message": "Duplicate attempt."
-  }'
+  -d '{"ticket_id": "DEMO-001", "message": "Duplicate attempt."}'
 ```
 **Response (HTTP 409 Conflict)**:
 ```json
 {
-  "detail": "Ticket ID 'TCK-1001' already exists in database."
+  "detail": "Ticket ID 'DEMO-001' already exists in database."
 }
 ```
 
@@ -306,10 +326,7 @@ curl -X POST http://localhost:8000/tickets \
 ```bash
 curl -X POST http://localhost:8000/tickets \
   -H "Content-Type: application/json" \
-  -d '{
-    "ticket_id": "TCK-1099",
-    "message": "   "
-  }'
+  -d '{"ticket_id": "DEMO-099", "message": "   "}'
 ```
 **Response (HTTP 422 Unprocessable Entity)**:
 ```json
@@ -318,7 +335,9 @@ curl -X POST http://localhost:8000/tickets \
     {
       "type": "value_error",
       "loc": ["body", "message"],
-      "msg": "Value error, message cannot be empty or purely whitespace"
+      "msg": "Value error, message cannot be empty or purely whitespace",
+      "input": "   ",
+      "ctx": {"error": {}}
     }
   ]
 }
@@ -326,16 +345,49 @@ curl -X POST http://localhost:8000/tickets \
 
 ### 5. Approve Ticket Draft (Transitions to `ready`)
 ```bash
-curl -X POST http://localhost:8000/tickets/TCK-1001/approve
+curl -X POST http://localhost:8000/tickets/DEMO-001/approve
 ```
 **Response (HTTP 200 OK)**:
 ```json
 {
-  "message": "Draft for ticket 'TCK-1001' successfully approved and marked ready.",
+  "message": "Draft for ticket 'DEMO-001' successfully approved and marked ready.",
   "ticket": {
-    "ticket_id": "TCK-1001",
-    "status": "ready"
+    "ticket_id": "DEMO-001",
+    "message": "Our production Azure Kubernetes Service cluster is down with an unexpected outage. All customer traffic is dropping.",
+    "category": "Technical",
+    "priority": "high",
+    "assigned_team": "Engineering Support",
+    "status": "ready",
+    "confidence": 0.4819,
+    "draft_source": "template",
+    "created_at": "2026-10-13T19:08:03.737532",
+    "updated_at": "2026-10-13T19:08:56.572592"
   }
+}
+```
+
+### 6. Live LLM Draft (Groq, model `openai/gpt-oss-20b`)
+
+> This response was captured separately with a live Groq key. `draft_source: "llm"` confirms
+> the LLM path was taken. `confidence: 0.3516` is above the `0.35` threshold, so the ticket
+> routes to `draft_generated` rather than `needs_review`.
+
+```bash
+curl -X POST http://localhost:8000/tickets \
+  -H "Content-Type: application/json" \
+  -d '{"ticket_id": "LIVE-002", "message": "Our production site has been down for an hour and customers cannot log in."}'
+```
+**Response (HTTP 201 Created)**:
+```json
+{
+  "ticket_id": "LIVE-002",
+  "message": "Our production site has been down for an hour and customers cannot log in.",
+  "category": "Technical",
+  "priority": "high",
+  "assigned_team": "Engineering Support",
+  "status": "draft_generated",
+  "confidence": 0.3516,
+  "draft_source": "llm"
 }
 ```
 
@@ -379,11 +431,11 @@ Priority assignment is 100% deterministic and rule-based (see [docs/priority-pol
 | Approval Endpoint (`POST /tickets/{id}/approve`) | `app/routes/tickets.py` | `tests/test_lifecycle.py::test_approval_success_marks_ready` |
 | Health & Health LLM Endpoints | `app/routes/health.py` | `tests/test_api.py::test_health_endpoints` |
 | Test-Set Evaluation Metrics Endpoint | `app/routes/metrics.py` | `tests/test_api.py::test_metrics_evaluation_endpoint` |
-| Team Routing Table Configuration | `app/config.py` | Verified in pipeline processing |
+| Team Routing Table Configuration | `app/config.py` | `tests/test_lifecycle.py::test_team_routing_assignments` (4 category assertions) |
 | 30 Labeled Tickets & Stratified 20/10 Split | `data/tickets_labelled.csv`, `scripts/split_data.py` | `data/train_set.csv`, `data/test_set.csv` |
 | Evaluation Script & Real Reports | `scripts/evaluate.py` | `reports/evaluation.json`, `reports/evaluation.md` |
-| Provider-Agnostic LLM Layer & Template Fallback | `app/services/llm.py` | `tests/test_llm_fallback.py` (6 unit tests) |
+| Provider-Agnostic LLM Layer & Template Fallback | `app/services/llm.py` | `tests/test_llm_fallback.py` (6 unit tests) + `tests/test_health_llm.py` (7 unit tests) |
 | Dockerfile with Non-Root & Pre-Downloaded Weights | `Dockerfile`, `.dockerignore` | Local Docker build and run verified |
-| GitHub Actions CI & Manual Azure OIDC Workflow | `.github/workflows/ci.yml`, `deploy-azure.yml` | Workflow YAML syntax verified |
+| GitHub Actions CI & Manual Azure OIDC Workflow | `.github/workflows/ci.yml`, `deploy-azure.yml` | Runs on every push; see Submission Links for the run |
 | Production Azure Plan & Key Vault Documentation | `docs/azure-plan.md` | Complete architecture & OIDC guide |
 | Live Demo Script & Interactive Runner | `docs/demo-script.md`, `scripts/demo.sh` | Verified via `./scripts/demo.sh` |
