@@ -68,7 +68,7 @@ flowchart TD
     Pipeline --> DB[(SQLite Database via SQLAlchemy)]
     DB --> TicketResponse[Ticket Response Payload]
 
-    Client -->|POST /tickets/{id}/approve| ApproveEndpoint[Approval Endpoint]
+    Client -->|POST /tickets/:id/approve| ApproveEndpoint[Approval Endpoint]
     ApproveEndpoint --> Finalize[Status: ready]
 ```
 
@@ -411,8 +411,6 @@ Priority assignment is 100% deterministic and rule-based (see [docs/priority-pol
 5. **Human Approval Requirement**: Because LLMs can occasionally draft imperfect phrasing, human approval is mandatory before any response is dispatched.
 
 ---
-
-## 13. Contributions and AI Assistance
 
 ## 13. Contributions and AI Assistance
 
