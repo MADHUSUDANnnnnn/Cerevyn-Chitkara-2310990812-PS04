@@ -414,8 +414,26 @@ Priority assignment is 100% deterministic and rule-based (see [docs/priority-pol
 
 ## 13. Contributions and AI Assistance
 
-- **Candidate Core Work**: Problem decomposition, architecture design, data creation and stratified partitioning, ML pipeline implementation with cross-validation threshold calibration, deterministic priority rules engine, RAG retrieval design, SQLAlchemy data models, Docker packaging, and test suite.
-- **AI Pairing Assistance**: Antigravity (Google DeepMind) was used as an agentic pair-programming assistant to accelerate boilerplate generation, Pydantic schema structuring, unit test scaffolding, and documentation formatting. All business logic, thresholding, and prompt guardrails were guided by the candidate.
+## 13. Contributions and AI Assistance
+
+**My contributions (Madhusudan Mudgal)**
+- Chose PS04 and defined the approach: sentence embeddings with logistic regression for classification, a deterministic priority policy, a confidence threshold that routes uncertain tickets to human review, and an LLM used only for the summary and draft reply, with a template fallback.
+- Wrote the detailed specification and prompt the code was generated from, including the requirements for the locked test set, the provider-agnostic LLM layer, and human approval before a draft becomes ready.
+- Set up and ran everything locally: the test suite, the evaluation script, the demo script, the app against the live Groq API, and the Docker container.
+- Found and fixed problems during testing:
+  - The `/health/llm` endpoint reported "configured" when the base URL and model were missing, so the OpenAI SDK defaulted to OpenAI's server. I diagnosed this from the server logs and had it fixed, with tests added.
+  - The evaluation report claimed the embedding model beat the keyword baseline although the baseline scored higher (10/10 vs 9/10). I had the wording corrected to say the difference is noise at N=10.
+  - README issues: wrong GitHub username in the badge and clone URL, a stale test count, and example responses that were not real output.
+- Handled secrets: kept `.env` out of Git, checked the history for leaks, and rotated my API key after it was sent to the wrong endpoint.
+
+**AI assistance**
+- **Antigravity (agentic coding assistant)** generated most of the implementation from my specification: the FastAPI application, classifier and retrieval code, the LLM client, the 30 fictional tickets and 9 knowledge-base articles, the tests, the Dockerfile, the GitHub Actions workflows, and the first drafts of the documentation.
+- Reused libraries: FastAPI, SQLAlchemy, Pydantic, scikit-learn, sentence-transformers (all-MiniLM-L6-v2), and the OpenAI Python SDK pointed at Groq's OpenAI-compatible endpoint.
+
+**What I verified myself**
+- All tests pass locally, and the evaluation reproduces (9/10 for the embedding classifier, 10/10 for the keyword baseline).
+- A live Groq call returns `draft_source: llm`; with no key the app falls back to `draft_source: template`.
+- The Docker container builds, reports healthy, and serves the API.
 
 ---
 
